@@ -1,0 +1,1 @@
+log(typeof feed.atom1());
