@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import xml2js from "xml2js"; // https://github.com/Leonidas-from-XIV/node-xml2js
+import uuid from "uuid";
 
 //GLOBAL VARIABLES
 //Database commands
@@ -53,7 +54,7 @@ app.get("/events", (req, res) => {
       },
     });
 
-    //Add each databse entry to that row
+    //Add each database entry to that row
     rows.forEach((row) => {
       feed.addItem({
         title: row.eventTitle,
@@ -78,6 +79,7 @@ app.get("/events", (req, res) => {
 //Post a new value into DB
 app.post("/events", (req, res) => {
   const data = req.body;
+  const id = `urn:uuid:${uuidv4()}`; //Generate unique id
   sql = `INSERT INTO events(name, eventTitle, date, description) VALUES (?,?,?,?)`;
   db.run(
     sql,
@@ -101,12 +103,30 @@ app.get("/otherEvents", (req, res) => {
   fetch(ATOM_URL)
     .then((response) => response.text())
     .then((str) => {
-      console.log(str);
       parseString(str, { trim: true }, function (err, result) {
-        console.dir(JSON.stringify(result));
+        
+        //Handle the parsed XML data here
+        const entries = result.feed.entry;
+        entries.forEach((entry) => {
+          const eventData = {
+            name: entry.author[0].name[0],
+            eventTitle: entry.title[0],
+            date: entry.published[0],
+            description: entry.summary[0]
+        };
+
+        // Insert the data into the database
+        const sql = `INSERT INTO events(name, eventTitle, date, description) VALUES (?,?,?,?)`;
+        db.run(sql, [eventData.name, eventData.eventTitle, eventData.date, eventData.description], (err) => {
+          if (err) return console.error(err.message);
+        });
+      });
+
+      res.send("Data successfully inserted into the database");
       });
     });
 });
+
 
 export default server;
 
