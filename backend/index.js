@@ -114,11 +114,19 @@ app.get("/otherEvents", (req, res) => {
             date: entry.published[0],
             description: entry.summary[0]
         };
+        
+        //Assuming the id is provided in the external data
+        const id = entry.id[0]; 
 
-        // Insert the data into the database
-        const sql = `INSERT INTO events(name, eventTitle, date, description) VALUES (?,?,?,?)`;
-        db.run(sql, [eventData.name, eventData.eventTitle, eventData.date, eventData.description], (err) => {
-          if (err) return console.error(err.message);
+        //Check if the event with the same id already exists in the database
+        const checkSql = `SELECT COUNT(*) FROM events WHERE id = ?`;
+        db.get(checkSql, [id], (err, row) => {
+          if (row['COUNT(*)'] == 0) { // If the event doesn't exist, insert it
+            const sql = `INSERT INTO events(id, name, eventTitle, date, description) VALUES (?,?,?,?,?)`;
+            db.run(sql, [id, eventData.name, eventData.eventTitle, eventData.date, eventData.description], (err) => {
+              if (err) return console.error(err.message);
+            });
+          }
         });
       });
 
