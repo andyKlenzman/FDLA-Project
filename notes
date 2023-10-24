@@ -1,22 +1,9 @@
-- Check out Evengiia's work
-- Could not find anything, now reexplore the requirments in the assignemnt
-- Needs to be able to handle injesting files
-- Look up if I could use testing to handle this, then return to the current bug
-- okay, I downloaded Jest, but now is not the time to practice it. You could look up how to write tests for a server
-- Now time to probe the bug I was working on
-- WOrking through bugs in the route. 
-- First path works, now I want to make sure I am sending back a proper response
-- I am going to set up the correct headers, then figure out how to do error handling
-- Not going to worry about error handling right now
-- Now work on fzing the data format
 
 
 LT TO DO
 - get that dev software that prints everything to the log, differentiate between 
 - send the correct response format
 - work on error handling
-
-
 - Support parsing and adding to database from other sources
 - Publish the app
 

@@ -37,15 +37,15 @@ localRoute
 
       //Add each databse entry to that row
       rows.forEach((row) => {
-        console.log(row);
+        const { title, link, id, published, updated, summary, author } = row;
         feed.addItem({
-          title: row.title,
-          link: row.link,
-          id: row.id,
-          published: row.published,
-          updated: row.updated,
-          summary: row.summary,
-          author: { name: row.author },
+          title: title,
+          link: link,
+          id: id,
+          date: published,
+          updated: updated,
+          summary: summary,
+          author: { name: author },
         });
       });
 
@@ -55,7 +55,7 @@ localRoute
         else {
           console.log("File written successfully\n");
           res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
+          // res.setHeader("Content-Type", "application/json");
           res.sendFile(atomFilePath);
         }
       });
@@ -65,7 +65,6 @@ localRoute
   .post((req, res) => {
     printServerStatus("Post request");
     sql = `INSERT INTO events(id, title, link, published, updated, summary, author) VALUES (?,?,?,?,?,?,?)`;
-
     const iso8601Date = date.toISOString();
 
     db.run(
