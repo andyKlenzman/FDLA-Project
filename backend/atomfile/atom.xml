@@ -1,82 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id/>
-    <title>Events</title>
-    <updated>2023-10-23T06:20:28.181Z</updated>
-    <generator/>
+    <title>Events Feed</title>
+    <updated>2023-10-25T16:48:13.461Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
     <author>
         <name>FDLA Class</name>
     </author>
     <entry>
-        <title type="html"><![CDATA[Classroom things]]></title>
-        <id/>
-        <link/>
-        <updated>2023-10-05</updated>
-        <summary type="html"><![CDATA[We do stuff]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Classroom things]]></title>
-        <id/>
-        <link/>
-        <updated>2023-10-05</updated>
-        <summary type="html"><![CDATA[We do stuff]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Classroom things]]></title>
-        <id/>
-        <link/>
-        <updated>2023-10-05</updated>
-        <summary type="html"><![CDATA[We do stuff]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[]]></title>
-        <id/>
-        <link/>
-        <updated/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Nothing]]></title>
-        <id/>
-        <link/>
-        <updated>2023-10-05</updated>
-        <summary type="html"><![CDATA[Here is the description]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Nothing]]></title>
-        <id/>
-        <link/>
-        <updated>2023-10-05</updated>
-        <summary type="html"><![CDATA[Here is the description]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[]]></title>
-        <id/>
-        <link/>
-        <updated/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Geburtstaf]]></title>
-        <id/>
-        <link/>
-        <updated>2023-09-28</updated>
-        <summary type="html"><![CDATA[dsapofPEOWAN]]></summary>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[]]></title>
-        <id/>
-        <link/>
-        <updated/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[]]></title>
-        <id/>
-        <link/>
-        <updated/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[]]></title>
-        <id/>
-        <link/>
-        <updated/>
+        <title type="html"><![CDATA[Test]]></title>
+        <id>62424724-91dd-44a5-b9aa-94fd95cdc132</id>
+        <link href="Test"/>
+        <updated>2023-10-25T13:29:30.914Z</updated>
+        <author>
+            <name>Test</name>
+        </author>
+        <published>2023-10-25T13:29:30.914Z</published>
     </entry>
 </feed>

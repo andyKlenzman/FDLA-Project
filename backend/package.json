@@ -16,6 +16,7 @@
     "feed": "^4.2.2",
     "feedparser": "^2.2.10",
     "jest": "^29.7.0",
+    "js2xmlparser": "^5.0.0",
     "mysql": "^2.18.1",
     "node-fetch": "^3.3.2",
     "nodemon": "^3.0.1",

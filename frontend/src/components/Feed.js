@@ -10,7 +10,7 @@ const Feed = () => {
       const res = await axios.get("http://localhost:4000/", {
         "Content-Type": "application/xml; charset=utf-8",
       });
-      console.log(res)
+      
 
       setFeedContent(res.data);
     } catch (error) {
