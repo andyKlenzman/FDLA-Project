@@ -7,6 +7,7 @@ import createDirname from "../utils/createDirname.js";
 import printServerStatus from "../utils/printServerStatus.js";
 import { randomUUID } from "crypto";
 import { parseString } from "xml2js";
+import extractAtomData from "../utils/extractAtomData.js";
 
 const mainRoute = Router();
 const __dirname = createDirname(import.meta.url);
@@ -19,7 +20,7 @@ mainRoute
   .get((req, res) => {
     printServerStatus("get request");
 
-    let sql = `SELECT * from events`; //select all values from the database
+    let sql = `SELECT * from events`; 
     db.all(sql, [], async (err, rows) => {
       if (err) {
         throw err;
@@ -94,7 +95,7 @@ mainRoute
 // Injests information from outside Atom files and adds it to our DB
 mainRoute.route("/atom").put((req, res) => {
   printServerStatus("Decentral get req");
-  // const ATOM_URL = `https://gioele.uber.space/k/fdla2023/feed1.atom`;
+
   const atomURL = req.body.atomURL;
   console.log(atomURL);
 
@@ -102,12 +103,22 @@ mainRoute.route("/atom").put((req, res) => {
     .then((response) => response.text())
     .then((str) => {
       parseString(str, function (err, result) {
-        console.log(result.feed.entry);
+        const atomData = extractAtomData(result);
 
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(result);
+        atomData.forEach((data) => {
+          const sql = `SELECT EXISTS (SELECT 1 FROM events WHERE id <> '${data.id}' LIMIT 1) AS exists`;
+          const result = db.get(sql);
+          const duplicateExistsByID = result.exists === 1;
+
+          if (duplicateExistsByID) {
+            //get out of here!
+          }
+        });
       });
     });
 });
+
+// res.statusCode = 200;
+// res.setHeader("Content-Type", "application/json");
+
 export default mainRoute;
