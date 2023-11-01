@@ -4,10 +4,10 @@ import path from "path";
 import { Router } from "express";
 import db from "../db/db.js";
 import createDirname from "../utils/createDirname.js";
-import printServerStatus from "../utils/printServerStatus.js";
 import { randomUUID } from "crypto";
 import { parseString } from "xml2js";
 import extractAtomData from "../utils/extractAtomData.js";
+import createHttpError from "http-errors";
 
 const mainRoute = Router();
 const __dirname = createDirname(import.meta.url);
@@ -17,14 +17,10 @@ let sql;
 mainRoute
   .route("/")
   // This endpoint returns the atom file with all of our local data
-  .get((req, res) => {
-    printServerStatus("get request");
-
-    let sql = `SELECT * from events`; 
+  .get((req, res, next) => {
+    let sql = `SELECT * from events`;
     db.all(sql, [], async (err, rows) => {
-      if (err) {
-        throw err;
-      }
+      if (err) next(err);
 
       //setting the header information for the ATOM file
       let feed = new Feed({
@@ -54,28 +50,18 @@ mainRoute
 
       // Write to the file, and if the write is successful, send it
       fs.writeFile(atomFilePath, feed.atom1(), (err) => {
-        if (err) console.log(err);
+        if (err) next(err);
         else {
-          console.log("File written successfully\n");
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.sendFile(atomFilePath);
+          res.status(200).sendFile(atomFilePath);
         }
       });
     });
   })
-  .post((req, res) => {
-    printServerStatus("Post request");
-
+  .post((req, res, next) => {
     const currentDate = new Date();
     const { title, link, summary, author } = req.body;
-
     if (!title || !link || !summary || !author) {
-      // err = new Error(`Campsite ${req.params.campsiteId} not found`);
-      // err.status = 404;
-      // return next(err);
-
-      return console.error("Incomplete necessary data fields");
+      return next(createHttpError(400, "Missing Information. Fill out missing fields and try again."));
     }
 
     sql = `INSERT INTO events(id, title, link, published, updated, summary, author) VALUES (?,?,?,?,?,?,?)`;
@@ -83,22 +69,16 @@ mainRoute
       sql,
       [randomUUID(), title, link, currentDate, currentDate, summary, author],
       (err) => {
-        if (err) return console.error(err.message);
+        return next(err);
       }
     );
 
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.end("New record entered");
+    res.status(200).send("New record entered");
   });
 
 // Injests information from outside Atom files and adds it to our DB
 mainRoute.route("/atom").put((req, res) => {
-  printServerStatus("Decentral get req");
-
   const atomURL = req.body.atomURL;
-  console.log(atomURL);
-
   fetch(atomURL)
     .then((response) => response.text())
     .then((str) => {
@@ -106,19 +86,21 @@ mainRoute.route("/atom").put((req, res) => {
         const atomData = extractAtomData(result);
 
         atomData.forEach((data) => {
-          const sql = `SELECT EXISTS (SELECT 1 FROM events WHERE id <> '${data.id}' LIMIT 1) AS exists`;
-          const result = db.get(sql);
-          const duplicateExistsByID = result.exists === 1;
+          const { id, title, link, published, updated, summary, author } = data;
 
-          if (duplicateExistsByID) {
-            //get out of here!
-          }
+          sql = `INSERT INTO events(id, title, link, published, updated, summary, author) VALUES (?,?,?,?,?,?,?)`;
+          db.run(
+            sql,
+            [id, title, link, published, updated, summary, author.name[0]],
+            (err) => {
+              next(err);
+            }
+          );
+
+          res.status(200).send("New ATOM file entered");
         });
       });
     });
 });
-
-// res.statusCode = 200;
-// res.setHeader("Content-Type", "application/json");
 
 export default mainRoute;
