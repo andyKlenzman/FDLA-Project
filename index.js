@@ -13,7 +13,7 @@ app.use(morgan("dev"));
 initdb();
 
 const server = app.listen("4000", () => {
-  console.log("App is listening at http://localhost:4000");
+  console.log("App is listening at http://localhost:4000"); 
 });
 
 app.use("/", mainRoute);
